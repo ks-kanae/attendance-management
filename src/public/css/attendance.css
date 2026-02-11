@@ -1,0 +1,170 @@
+.attendance-container {
+    min-height: calc(100vh - 60px);
+    background: #e8e8e8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.attendance-content {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.status-badge {
+    display: inline-block;
+    background: #d3d3d3;
+    color: #666;
+    padding: 8px 24px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 40px;
+}
+
+.status-badge--working {
+    background: #c8e6c9;
+    color: #2e7d32;
+}
+
+.status-badge--on_break {
+    background: #fff9c4;
+    color: #f57f17;
+}
+
+.status-badge--finished {
+    background: #e0e0e0;
+    color: #757575;
+}
+
+.date-time {
+    margin-bottom: 60px;
+}
+
+.current-date {
+    font-size: 24px;
+    color: #333;
+    margin: 0 0 20px 0;
+    font-weight: 500;
+}
+
+.current-time {
+    font-size: 80px;
+    font-weight: bold;
+    color: #000;
+    margin: 0;
+    letter-spacing: 4px;
+}
+
+.button-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.attendance-form {
+    margin: 0;
+}
+
+.attendance-button {
+    width: 200px;
+    height: 60px;
+    background: #000;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.attendance-button--single {
+    width: 200px;
+}
+
+.attendance-button--end {
+    background: #000;
+}
+
+.attendance-button--break {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+}
+
+.attendance-button--break-end {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+}
+
+.attendance-button:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.attendance-button--end:hover {
+    background: #333;
+}
+
+.attendance-button--break:hover {
+    background: #f5f5f5;
+}
+
+.attendance-button:active {
+    transform: translateY(0);
+}
+
+.finish-message {
+    font-size: 24px;
+    color: #666;
+    margin: 0;
+}
+
+@media screen and (max-width: 768px) {
+    .current-date {
+        font-size: 20px;
+    }
+
+    .current-time {
+        font-size: 60px;
+    }
+
+    .button-wrapper {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .attendance-button {
+        width: 180px;
+        height: 55px;
+        font-size: 20px;
+    }
+
+    .attendance-button--single {
+        width: 180px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .current-date {
+        font-size: 18px;
+    }
+
+    .current-time {
+        font-size: 48px;
+    }
+
+    .attendance-button {
+        width: 160px;
+        height: 50px;
+        font-size: 18px;
+    }
+
+    .attendance-button--single {
+        width: 160px;
+    }
+}

@@ -1,0 +1,98 @@
+.register-form-content {
+    margin: 0 auto;
+    padding: 30px 15px;
+    max-width: 1230px;
+}
+
+.register-form-heading {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.form {
+    margin: 0 auto;
+    width: 35%;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 5px;
+}
+
+.form-group-title {
+    text-align: left;
+    font-weight: bold;
+}
+
+.form-error {
+    height: 20px;
+    color: #ff0000;
+    text-align: left;
+    font-size: 14px;
+}
+
+.form-input-text input {
+    padding: 10px;
+    width: 100%;
+    height: 40px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    box-sizing: border-box;
+    appearance: none;
+}
+
+.form-button {
+    margin-top: 40px;
+}
+
+.form-button-submit {
+    padding: 10px;
+    width: 100%;
+    height: 50px;
+    border: none;
+    border-radius: 3px;
+    background: black;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.login-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.login-button-submit {
+    text-decoration: none;
+    color: #00aaff;
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .form {
+        width: 35%;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 850px) {
+    .form {
+        width: 35%;
+    }
+
+    .login-form-content,
+    .register-form-content {
+        padding: 20px 20px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .form {
+        width: 40%;
+    }
+
+    .form-button-submit {
+        height: 45px;
+        font-size: 16px;
+    }
+}
