@@ -8,6 +8,7 @@ use App\Models\Attendance;
 use App\Models\WorkBreak;
 use App\Models\AttendanceCorrection;
 use App\Models\BreakCorrection;
+use App\Models\Admin;
 use Carbon\Carbon;
 
 class AttendanceSeeder extends Seeder
@@ -20,11 +21,10 @@ class AttendanceSeeder extends Seeder
     public function run()
     {
         // 管理者アカウント作成
-        User::create([
+        Admin::create([
             'name' => '管理者',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
-            'role' => 'admin', // 管理者
         ]);
 
         // テストユーザー5人を作成
@@ -147,11 +147,20 @@ class AttendanceSeeder extends Seeder
                 $breakCount = min(rand(1, 2), $attendance->breaks->count());
 
                 foreach (range(1, $breakCount) as $i) {
+
+                    if ($i === 1) {
+                        $start = '12:00:00';
+                        $end   = '13:00:00';
+                    } else {
+                        $start = '15:00:00';
+                        $end   = '15:15:00';
+                    }
+
                     BreakCorrection::create([
                         'attendance_correction_id' => $correction->id,
                         'break_number' => $i,
-                        'corrected_start_time' => '12:00:00',
-                        'corrected_end_time'   => '13:00:00',
+                        'corrected_start_time' => $start,
+                        'corrected_end_time'   => $end,
                     ]);
                 }
             });

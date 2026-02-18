@@ -18,15 +18,21 @@ class RedirectIfAuthenticated
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next, ...$guards)
-    {
-        $guards = empty($guards) ? [null] : $guards;
+{
+    $guards = empty($guards) ? [null] : $guards;
 
-        foreach ($guards as $guard) {
-            if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
-            }
+    foreach ($guards as $guard) {
+
+        if ($guard === 'admin' && Auth::guard('admin')->check()) {
+            return redirect()->route('admin.attendance.list');
         }
 
-        return $next($request);
+        if ($guard === null && Auth::guard('web')->check()) {
+            return redirect('/attendance');
+        }
     }
+
+    return $next($request);
+}
+
 }

@@ -10,25 +10,41 @@ class CorrectionRequestController extends Controller
 {
     public function list(Request $request)
     {
-        $user = Auth::user();
-
-        // タブの選択（デフォルトは承認待ち）
         $tab = $request->input('tab', 'pending');
 
-        // 修正申請を取得
-        $query = AttendanceCorrection::with(['attendance', 'user'])
-            ->where('user_id', $user->id)
-            ->orderBy('created_at', 'desc');
+        if (Auth::guard('admin')->check()) {
+            // 管理者用の申請一覧
+            $query = AttendanceCorrection::with(['attendance', 'user'])
+                ->whereHas('user', function($q) {
+                    $q->where('role', 'user');
+                })
+                ->orderBy('created_at', 'desc');
 
-        // タブによる絞り込み
-        if ($tab === 'pending') {
-            $query->where('status', 'pending');
-        } elseif ($tab === 'approved') {
-            $query->whereIn('status', ['approved', 'rejected']);
+            if ($tab === 'pending') {
+                $query->where('status', 'pending');
+            } elseif ($tab === 'approved') {
+                $query->whereIn('status', ['approved', 'rejected']);
+            }
+
+            $corrections = $query->get();
+
+            return view('admin.admin-correction-list', compact('corrections', 'tab'));
+        } else {
+            // 一般ユーザー用の申請一覧
+            $user = Auth::user();
+            $query = AttendanceCorrection::with(['attendance', 'user'])
+                ->where('user_id', $user->id)
+                ->orderBy('created_at', 'desc');
+
+            if ($tab === 'pending') {
+                $query->where('status', 'pending');
+            } elseif ($tab === 'approved') {
+                $query->whereIn('status', ['approved', 'rejected']);
+            }
+
+            $corrections = $query->get();
+
+            return view('correction-request-list', compact('corrections', 'tab'));
         }
-
-        $corrections = $query->get();
-
-        return view('correction-request-list', compact('corrections', 'tab'));
     }
 }

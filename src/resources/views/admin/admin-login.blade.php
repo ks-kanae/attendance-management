@@ -13,7 +13,7 @@
     <div class="login-content">
         <h1 class="login-title">管理者ログイン</h1>
 
-        <form class="login-form" action="{{ route('admin.login') }}" method="POST">
+        <form class="login-form" action="{{ route('admin.login') }}" method="POST" novalidate>
             @csrf
             <div class="form-group">
                 <label class="form-label">メールアドレス</label>

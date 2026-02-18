@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -28,19 +29,32 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Fortify::createUsersUsing(CreateNewUser::class);
-        Fortify::registerView(function () {
-        return view('auth.register');
+        Fortify::loginView(function () {
+        return view('auth.login');
         });
 
-        Fortify::loginView(function () {
-            return view('auth.login');
+        Fortify::authenticateUsing(function (Request $request) {
+            if ($request->routeIs('admin.*')) {
+                if (Auth::guard('admin')->attempt($request->only('email','password'))) {
+                return Auth::guard('admin')->user();
+                }
+                return null;
+            }
+
+            if (Auth::guard('web')->attempt($request->only('email','password'))) {
+                return Auth::guard('web')->user();
+            }
+
+            return null;
         });
 
         RateLimiter::for('login', function (Request $request) {
-        $email = (string) $request->email;
+            $email = (string) $request->email;
+            return Limit::perMinute(10)->by($email . $request->ip());
+        });
 
-        return Limit::perMinute(10)->by($email . $request->ip());
+        Fortify::registerView(function () {
+            return view('auth.register');
         });
     }
 }

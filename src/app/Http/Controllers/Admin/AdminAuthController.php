@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AdminLoginRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,39 +14,26 @@ class AdminAuthController extends Controller
         return view('admin.admin-login');
     }
 
-    public function login(Request $request)
+    public function login(AdminLoginRequest $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ], [
-            'email.required' => 'メールアドレスを入力してください',
-            'email.email' => '有効なメールアドレスを入力してください',
-            'password.required' => 'パスワードを入力してください',
-        ]);
+        if (Auth::guard('admin')->attempt([
+            'email' => $request->email,
+            'password' => $request->password,
+        ])) {
+            $request->session()->regenerate();
 
-        if (Auth::attempt($credentials)) {
-            // ログイン成功後、管理者かチェック
-            if (Auth::user()->isAdmin()) {
-                $request->session()->regenerate();
-                return redirect()->intended(route('admin.attendance.list'));
-            }
-
-            // 一般ユーザーの場合はログアウト
-            Auth::logout();
-            return back()->withErrors([
-                'email' => '管理者権限がありません。',
-            ])->onlyInput('email');
+            return redirect()->intended(route('admin.attendance.list'));
         }
 
         return back()->withErrors([
-            'email' => 'ログイン情報が正しくありません。',
+            'email' => 'ログイン情報が登録されていません。',
         ])->onlyInput('email');
     }
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

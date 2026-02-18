@@ -6,6 +6,7 @@
     <title>@yield('title', '管理画面') - COACHTECH勤怠管理</title>
 
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin-common.css') }}">
     @yield('css')
 </head>
 
@@ -17,8 +18,8 @@
             </div>
             <nav class="admin-header-nav">
                 <a href="{{ route('admin.attendance.list') }}" class="nav-link">勤怠一覧</a>
-                <a href="#" class="nav-link">スタッフ一覧</a>
-                <a href="#" class="nav-link">申請一覧</a>
+                <a href="{{ route('admin.staff.list') }}" class="nav-link">スタッフ一覧</a>
+                <a href="{{ route('admin.correction.list') }}" class="nav-link">申請一覧</a>
                 <form action="{{ route('admin.logout') }}" method="POST" style="display:inline;">
                     @csrf
                     <button type="submit" class="nav-link nav-link--button">ログアウト</button>

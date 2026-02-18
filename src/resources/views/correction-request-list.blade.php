@@ -11,12 +11,12 @@
 
         {{-- タブ --}}
         <div class="tab-wrapper">
-            <a href="{{ route('correction.list', ['tab' => 'pending']) }}" 
-               class="tab-button {{ $tab === 'pending' ? 'tab-button--active' : '' }}">
+            <a href="{{ route('correction.user.list', ['tab' => 'pending']) }}"
+                class="tab-button {{ $tab === 'pending' ? 'tab-button--active' : '' }}">
                 承認待ち
             </a>
-            <a href="{{ route('correction.list', ['tab' => 'approved']) }}" 
-               class="tab-button {{ $tab === 'approved' ? 'tab-button--active' : '' }}">
+            <a href="{{ route('correction.user.list', ['tab' => 'approved']) }}"
+                class="tab-button {{ $tab === 'approved' ? 'tab-button--active' : '' }}">
                 承認済み
             </a>
         </div>

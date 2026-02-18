@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\AttendanceCorrectionRequest;
 use App\Models\Attendance;
 use App\Models\AttendanceCorrection;
 use Carbon\Carbon;
@@ -202,17 +203,8 @@ class AttendanceController extends Controller
     /**
      * 修正申請
      */
-    public function correct(Request $request, $id)
+    public function correct(AttendanceCorrectionRequest $request, $id)
     {
-        $request->validate([
-            'corrected_start_time' => 'required',
-            'corrected_end_time' => 'required',
-            'reason' => 'required|string|max:500',
-            'break_corrections' => 'array',
-            'break_corrections.*.start_time' => 'nullable',
-            'break_corrections.*.end_time' => 'nullable',
-        ]);
-
         $user = Auth::user();
         $attendance = Attendance::where('user_id', $user->id)->findOrFail($id);
 

@@ -23,7 +23,7 @@ class CreateAttendanceCorrectionsTable extends Migration
             $table->text('reason');
 
             $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->foreignId('approved_by')->nullable()->constrained('users');
+            $table->foreignId('approved_by')->nullable()->constrained('admins');
             $table->timestamp('approved_at')->nullable();
 
             $table->timestamps();

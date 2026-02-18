@@ -2,7 +2,6 @@
 
 @section('title', '勤怠一覧')
 
-
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/admin-attendance-list.css') }}">
 @endsection
@@ -48,7 +47,7 @@
                         <td>{{ $data['total_break_time'] ?? '' }}</td>
                         <td>{{ $data['total_work_time'] ?? '' }}</td>
                         <td>
-                            <a href="#" class="detail-link">詳細</a>
+                            <a href="{{ route('admin.attendance.detail', $data['attendance']->id) }}" class="detail-link">詳細</a>
                         </td>
                     @else
                         <td>-</td>

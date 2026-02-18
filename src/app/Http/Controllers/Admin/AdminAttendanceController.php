@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Attendance;
 use App\Models\User;
+use App\Models\WorkBreak;
 use Carbon\Carbon;
 
 class AdminAttendanceController extends Controller
@@ -41,6 +42,91 @@ class AdminAttendanceController extends Controller
 
         return view('admin.admin-attendance-list', compact('attendanceData', 'date'));
     }
+
+    /**
+     * 勤怠詳細
+     */
+    public function detail($id)
+    {
+        $attendance = Attendance::with(['user', 'breaks'])
+            ->whereHas('user', function($query) {
+                $query->where('role', 'user');
+            })
+            ->findOrFail($id);
+
+        return view('admin.admin-attendance-detail', compact('attendance'));
+    }
+
+    /**
+     * 勤怠更新
+     */
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'start_time' => 'required',
+            'end_time' => 'required',
+            'breaks' => 'array',
+            'breaks.*.start_time' => 'nullable',
+            'breaks.*.end_time' => 'nullable',
+        ], [
+            'start_time.required' => '出勤時刻を入力してください',
+            'end_time.required' => '退勤時刻を入力してください',
+        ]);
+
+        $attendance = Attendance::whereHas('user', function($query) {
+                $query->where('role', 'user');
+            })
+            ->findOrFail($id);
+
+        // 勤怠時間を更新
+        $attendance->update([
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+        ]);
+
+        // ===== ここから休憩を「削除せず」更新 =====
+        $existingBreaks = $attendance->breaks->values();
+
+        if ($request->has('breaks')) {
+
+            foreach ($request->breaks as $index => $breakData) {
+
+                $start = $breakData['start_time'] ?? null;
+                $end   = $breakData['end_time'] ?? null;
+
+                $existing = $existingBreaks->get($index);
+
+                // 入力がある場合
+                if ($start && $end) {
+
+                    if ($existing) {
+                        // 既存更新
+                        $existing->update([
+                            'start_time' => $start,
+                            'end_time' => $end,
+                        ]);
+                    } else {
+                        // 新規作成
+                        WorkBreak::create([
+                            'attendance_id' => $attendance->id,
+                            'start_time' => $start,
+                            'end_time' => $end,
+                        ]);
+                    }
+
+                } else {
+                    // 空欄なら既存を削除
+                    if ($existing) {
+                        $existing->delete();
+                    }
+                }
+            }
+        }
+        // ===== ここまで =====
+
+        return redirect()->route('admin.attendance.detail', $id)->with('success', '勤怠情報を更新しました');
+    }
+
 
     private function calculateWorkTime($attendance)
     {

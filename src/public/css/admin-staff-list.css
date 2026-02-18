@@ -1,0 +1,78 @@
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-title {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 30px;
+    padding-left: 15px;
+    border-left: 4px solid #000;
+}
+
+.staff-table-wrapper {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.staff-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.staff-table thead {
+    background: #f8f8f8;
+}
+
+.staff-table th {
+    padding: 15px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.staff-table td {
+    padding: 15px;
+    text-align: center;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+}
+
+.staff-table tbody tr:hover {
+    background: #fafafa;
+}
+
+.detail-link {
+    color: #000;
+    text-decoration: underline;
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.detail-link:hover {
+    opacity: 0.7;
+}
+
+@media screen and (max-width: 768px) {
+    .page-title {
+        font-size: 24px;
+    }
+
+    .staff-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .staff-table {
+        min-width: 600px;
+    }
+
+    .staff-table th,
+    .staff-table td {
+        padding: 10px 8px;
+        font-size: 13px;
+    }
+}

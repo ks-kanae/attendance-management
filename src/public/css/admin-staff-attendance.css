@@ -1,9 +1,3 @@
-
-/* メインコンテンツ */
-.admin-main {
-    padding: 40px 20px;
-}
-
 .admin-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -17,8 +11,7 @@
     border-left: 4px solid #000;
 }
 
-/* 日付セレクター */
-.date-selector {
+.month-selector {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -26,7 +19,7 @@
     margin-bottom: 30px;
 }
 
-.date-nav-button {
+.month-nav-button {
     color: #333;
     text-decoration: none;
     font-size: 14px;
@@ -35,30 +28,22 @@
     transition: background 0.3s;
 }
 
-.date-nav-button:hover {
+.month-nav-button:hover {
     background: #e0e0e0;
 }
 
-.current-date {
+.current-month {
     display: flex;
     align-items: center;
 }
 
-.date-input {
-    padding: 8px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
+.month-display {
+    font-size: 18px;
+    font-weight: bold;
+    min-width: 100px;
+    text-align: center;
 }
 
-.date-input:focus {
-    outline: none;
-    border-color: #000;
-}
-
-/* 勤怠テーブル */
 .attendance-table-wrapper {
     background: #fff;
     border-radius: 8px;
@@ -94,6 +79,10 @@
     background: #fafafa;
 }
 
+.date-cell {
+    font-weight: 500;
+}
+
 .detail-link {
     color: #000;
     text-decoration: underline;
@@ -105,30 +94,47 @@
     opacity: 0.7;
 }
 
+.detail-link--disabled {
+    color: #ccc;
+    text-decoration: none;
+    cursor: default;
+}
+
+.detail-link--disabled:hover {
+    opacity: 1;
+}
+
+.csv-button-wrapper {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 30px;
+}
+
+.csv-button {
+    background: #000;
+    color: #fff;
+    padding: 12px 40px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.csv-button:hover {
+    background: #333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.csv-button:active {
+    transform: translateY(0);
+}
+
 @media screen and (max-width: 768px) {
-    .admin-header-inner {
-        flex-direction: column;
-        gap: 15px;
-        padding: 15px 20px;
-    }
-
-    .admin-header-nav {
-        flex-wrap: wrap;
-        gap: 15px;
-        justify-content: center;
-    }
-
-    .admin-main {
-        padding: 20px 10px;
-    }
-
     .page-title {
         font-size: 24px;
-    }
-
-    .date-selector {
-        flex-direction: column;
-        gap: 15px;
     }
 
     .attendance-table-wrapper {
@@ -136,7 +142,7 @@
     }
 
     .attendance-table {
-        min-width: 700px;
+        min-width: 600px;
     }
 
     .attendance-table th,
