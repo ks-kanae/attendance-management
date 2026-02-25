@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Requests\AdminAttendanceRequest;
 use App\Models\Attendance;
 use App\Models\User;
 use App\Models\WorkBreak;
@@ -35,8 +36,8 @@ class AdminAttendanceController extends Controller
             return [
                 'user' => $user,
                 'attendance' => $attendance,
-                'total_work_time' => $attendance ? $this->calculateWorkTime($attendance) : null,
-                'total_break_time' => $attendance ? $this->calculateBreakTime($attendance) : null,
+                'total_work_time' => $attendance ? $attendance->work_time : null,
+                'total_break_time' => $attendance ? $attendance->break_time : null,
             ];
         });
 
@@ -60,19 +61,8 @@ class AdminAttendanceController extends Controller
     /**
      * 勤怠更新
      */
-    public function update(Request $request, $id)
+    public function update(AdminAttendanceRequest $request, $id)
     {
-        $request->validate([
-            'start_time' => 'required',
-            'end_time' => 'required',
-            'breaks' => 'array',
-            'breaks.*.start_time' => 'nullable',
-            'breaks.*.end_time' => 'nullable',
-        ], [
-            'start_time.required' => '出勤時刻を入力してください',
-            'end_time.required' => '退勤時刻を入力してください',
-        ]);
-
         $attendance = Attendance::whereHas('user', function($query) {
                 $query->where('role', 'user');
             })
@@ -82,6 +72,7 @@ class AdminAttendanceController extends Controller
         $attendance->update([
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
+            'reason'     => $request->reason,
         ]);
 
         // ===== ここから休憩を「削除せず」更新 =====
@@ -125,47 +116,5 @@ class AdminAttendanceController extends Controller
         // ===== ここまで =====
 
         return redirect()->route('admin.attendance.detail', $id)->with('success', '勤怠情報を更新しました');
-    }
-
-
-    private function calculateWorkTime($attendance)
-    {
-        if (!$attendance->start_time || !$attendance->end_time) {
-            return null;
-        }
-
-        $start = Carbon::parse($attendance->start_time);
-        $end = Carbon::parse($attendance->end_time);
-        $workMinutes = $start->diffInMinutes($end);
-
-        $breakMinutes = $this->calculateBreakTime($attendance, true);
-        $totalMinutes = $workMinutes - $breakMinutes;
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
-    }
-
-    private function calculateBreakTime($attendance, $returnMinutes = false)
-    {
-        $totalMinutes = 0;
-
-        foreach ($attendance->breaks as $break) {
-            if ($break->start_time && $break->end_time) {
-                $start = Carbon::parse($break->start_time);
-                $end = Carbon::parse($break->end_time);
-                $totalMinutes += $start->diffInMinutes($end);
-            }
-        }
-
-        if ($returnMinutes) {
-            return $totalMinutes;
-        }
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
     }
 }

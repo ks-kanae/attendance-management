@@ -31,17 +31,21 @@
 
             <div class="detail-row">
                 <div class="detail-label">出勤・退勤</div>
-                <div class="detail-value-group">
-                    <input type="time" name="start_time" value="{{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '' }}" class="time-input" required>
-                    <span class="time-separator">〜</span>
-                    <input type="time" name="end_time" value="{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '' }}" class="time-input" required>
+                <div class="detail-value-wrapper">
+                    <div class="detail-value-group">
+                        <input type="time" name="start_time" value="{{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '' }}" class="time-input" required>
+                        <span class="time-separator">〜</span>
+                        <input type="time" name="end_time" value="{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '' }}" class="time-input" required>
+                    </div>
+                    <div class="error-area">
+                    @error('start_time')
+                    <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    @error('end_time')
+                    <div class="form-error">{{ $message }}</div>
+                    @enderror
+                    </div>
                 </div>
-                @error('start_time')
-                <div class="form-error">{{ $message }}</div>
-                @enderror
-                @error('end_time')
-                <div class="form-error">{{ $message }}</div>
-                @enderror
             </div>
 
             @php
@@ -56,18 +60,28 @@
 
                 <div class="detail-row">
                     <div class="detail-label">休憩{{ $i == 0 ? '' : $i+1 }}</div>
-                    <div class="detail-value-group">
-                        <input type="time"
-                            name="breaks[{{ $i }}][start_time]"
-                            value="{{ $break && $break->start_time ? \Carbon\Carbon::parse($break->start_time)->format('H:i') : '' }}"
-                            class="time-input">
+                    <div class="detail-value-wrapper">
+                        <div class="detail-value-group">
+                            <input type="time"
+                                name="breaks[{{ $i }}][start_time]"
+                                value="{{ $break && $break->start_time ? \Carbon\Carbon::parse($break->start_time)->format('H:i') : '' }}"
+                                class="time-input">
 
-                        <span class="time-separator">〜</span>
+                            <span class="time-separator">〜</span>
 
-                        <input type="time"
-                            name="breaks[{{ $i }}][end_time]"
-                            value="{{ $break && $break->end_time ? \Carbon\Carbon::parse($break->end_time)->format('H:i') : '' }}"
-                            class="time-input">
+                            <input type="time"
+                                name="breaks[{{ $i }}][end_time]"
+                                value="{{ $break && $break->end_time ? \Carbon\Carbon::parse($break->end_time)->format('H:i') : '' }}"
+                                class="time-input">
+                        </div>
+                        <div class="error-area">
+                            @error("breaks.{$i}.start_time")
+                            <div class="error-message">{{ $message }}</div>
+                            @enderror
+                            @error("breaks.{$i}.end_time")
+                            <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
                     </div>
                 </div>
             @endfor
@@ -75,7 +89,10 @@
             <div class="detail-row">
                 <div class="detail-label">備考</div>
                 <div class="detail-value-textarea">
-                    <textarea name="remarks" class="remarks-textarea" placeholder="備考を入力してください" readonly></textarea>
+                    <textarea name="reason" class="remarks-textarea" placeholder="備考を入力してください">{{ old('reason', $attendance->reason) }}</textarea>
+                    @error('reason')
+                    <div class="form-error">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
         </div>

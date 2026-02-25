@@ -28,6 +28,12 @@
         </div>
     </header>
 
+    @if(session('success'))
+    <div class="flash-message">
+        {{ session('success') }}
+    </div>
+    @endif
+
     <main class="admin-main">
         @yield('content')
     </main>

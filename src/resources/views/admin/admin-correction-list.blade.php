@@ -7,6 +7,7 @@
 @endsection
 
 @section('content')
+
 <div class="admin-container">
     <h1 class="page-title">申請一覧</h1>
 

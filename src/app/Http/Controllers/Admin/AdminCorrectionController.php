@@ -78,36 +78,9 @@ class AdminCorrectionController extends Controller
             $correction->update([
                 'status' => 'approved',
                 'approved_by' => auth('admin')->id(),
+                'approved_at' => now(),
             ]);
         });
-
-        return redirect()->route('admin.correction.list');
-    }
-
-    /**
-     * 承認処理
-     */
-    public function updateApproval(Request $request, $id)
-    {
-        $correction = AttendanceCorrection::whereHas('user', function($query) {
-                $query->where('role', 'user');
-            })
-            ->findOrFail($id);
-
-        // 承認処理
-        $correction->update([
-            'status' => 'approved',
-            'approved_by' => auth('admin')->id(),
-            'approved_at' => now(),
-        ]);
-
-        // Ajax リクエストの場合
-        if ($request->ajax()) {
-            return response()->json([
-                'success' => true,
-                'message' => '承認しました',
-            ]);
-        }
 
         return redirect()->route('admin.correction.list')->with('success', '承認しました');
     }

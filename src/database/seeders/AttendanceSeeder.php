@@ -42,6 +42,7 @@ class AttendanceSeeder extends Seeder
                 'email' => $userData['email'],
                 'password' => bcrypt('password'),
                 'role' => 'user', // 一般ユーザー
+                'email_verified_at' => now(),
             ]);
 
             // 過去30日分の勤怠データを作成

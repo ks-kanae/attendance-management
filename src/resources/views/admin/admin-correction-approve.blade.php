@@ -40,43 +40,35 @@
             @foreach($breaks as $index => $break)
                 <div class="detail-row">
                     <div class="detail-label">
-                        休憩{{ $index + 1 }}
+                        休憩{{ $index === 0 ? '' : $index + 1 }}
                     </div>
 
                     <div class="detail-value-group">
-                        <input type="time"
-                            name="breaks[{{ $index }}][start]"
-                            value="{{ $break->corrected_start_time ? \Carbon\Carbon::parse($break->corrected_start_time)->format('H:i') : '' }}"
-                            class="time-input">
+                        <span class="time-display">
+                            {{ $break->corrected_start_time ? \Carbon\Carbon::parse($break->corrected_start_time)->format('H:i') : '' }}
+                        </span>
 
                         <span class="time-separator">〜</span>
 
-                        <input type="time"
-                            name="breaks[{{ $index }}][end]"
-                            value="{{ $break->corrected_end_time ? \Carbon\Carbon::parse($break->corrected_end_time)->format('H:i') : '' }}"
-                            class="time-input">
+                        <span class="time-display">
+                            {{ $break->corrected_end_time ? \Carbon\Carbon::parse($break->corrected_end_time)->format('H:i') : '' }}
+                        </span>
                     </div>
                 </div>
             @endforeach
 
             {{-- ★追加用の空行（重要） --}}
+            @php
+                $emptyCount = max(0, 2 - $breaks->count());
+            @endphp
+
+            @for($i = 0; $i < $emptyCount; $i++)
             <div class="detail-row">
                 <div class="detail-label">
-                    休憩{{ $breaks->count() + 1 }}
-                </div>
-
-                <div class="detail-value-group">
-                    <input type="time"
-                        name="breaks[{{ $breaks->count() }}][start]"
-                        class="time-input">
-
-                    <span class="time-separator">〜</span>
-
-                    <input type="time"
-                        name="breaks[{{ $breaks->count() }}][end]"
-                        class="time-input">
+                    休憩{{ $breaks->count() + $i === 0 ? '' : $breaks->count() + $i + 1 }}
                 </div>
             </div>
+            @endfor
 
             <div class="detail-row">
                 <div class="detail-label">備考</div>

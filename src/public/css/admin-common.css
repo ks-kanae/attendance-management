@@ -51,6 +51,14 @@ body {
     font-size: 15px;
 }
 
+.flash-message {
+    background: #c8e6c9;
+    color: #2e7d32;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
 /*メインコンテンツ */
 .admin-main {
     padding: 40px 20px;

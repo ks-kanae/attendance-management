@@ -8,6 +8,13 @@
 </head>
 
 <body>
+<header class="admin-header">
+    <div class="admin-header-inner">
+        <div class="admin-header-logo">
+            <img src="{{ asset('img/COACHTECHヘッダーロゴ.png') }}" alt="COACHTECH">
+        </div>
+    </div>
+</header>
 
 <div class="login-container">
     <div class="login-content">

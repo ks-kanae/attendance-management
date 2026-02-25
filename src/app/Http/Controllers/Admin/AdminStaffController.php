@@ -59,8 +59,8 @@ class AdminStaffController extends Controller
             $dates->push([
                 'date' => $date,
                 'attendance' => $attendance,
-                'total_work_time' => $attendance ? $this->calculateWorkTime($attendance) : null,
-                'total_break_time' => $attendance ? $this->calculateBreakTime($attendance) : null,
+                'total_work_time' => $attendance ? $attendance->work_time : null,
+                'total_break_time' => $attendance ? $attendance->break_time : null,
             ]);
         }
 
@@ -77,10 +77,11 @@ class AdminStaffController extends Controller
         $year = $request->input('year', Carbon::now()->year);
         $month = $request->input('month', Carbon::now()->month);
 
+        $targetDate = Carbon::create($year, $month, 1);
+
         $attendances = Attendance::where('user_id', $id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
-            ->orderBy('date')
             ->get();
 
         $filename = sprintf('%s_%s年%s月_勤怠.csv', $staff->name, $year, $month);
@@ -90,70 +91,43 @@ class AdminStaffController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
         ];
 
-        $callback = function() use ($attendances) {
+        $callback = function() use ($attendances, $targetDate, $year, $month) {
             $file = fopen('php://output', 'w');
 
             // BOM追加（Excel対応）
             fputs($file, "\xEF\xBB\xBF");
 
             // ヘッダー行
-            fputcsv($file, ['日付', '出勤', '退勤', '休憩時間', '勤務時間']);
+            fputcsv($file, ['日付', '曜日', '出勤', '退勤', '休憩時間', '勤務時間']);
 
-            // データ行
-            foreach ($attendances as $attendance) {
+            $daysInMonth = $targetDate->daysInMonth;
+            $weekDays = ['日', '月', '火', '水', '木', '金', '土'];
+
+            // 月の全日付ループ
+            for ($day = 1; $day <= $daysInMonth; $day++) {
+
+                $date = Carbon::create($year, $month, $day);
+
+                $attendance = $attendances->first(function ($attendance) use ($date) {
+                    return $attendance->date->isSameDay($date);
+                });
+
                 fputcsv($file, [
-                    $attendance->date->format('Y/m/d'),
-                    $attendance->start_time ? Carbon::parse($attendance->start_time)->format('H:i') : '',
-                    $attendance->end_time ? Carbon::parse($attendance->end_time)->format('H:i') : '',
-                    $this->calculateBreakTime($attendance),
-                    $this->calculateWorkTime($attendance),
+                    $date->format('Y/m/d'),
+                    $weekDays[$date->dayOfWeek],
+                    $attendance && $attendance->start_time
+                        ? Carbon::parse($attendance->start_time)->format('H:i')
+                        : '',
+                    $attendance && $attendance->end_time
+                        ? Carbon::parse($attendance->end_time)->format('H:i')
+                        : '',
+                    $attendance ? $attendance->break_time : '',
+                    $attendance ? $attendance->work_time : '',
                 ]);
             }
 
             fclose($file);
         };
-
         return response()->stream($callback, 200, $headers);
-    }
-
-    private function calculateWorkTime($attendance)
-    {
-        if (!$attendance->start_time || !$attendance->end_time) {
-            return null;
-        }
-
-        $start = Carbon::parse($attendance->start_time);
-        $end = Carbon::parse($attendance->end_time);
-        $workMinutes = $start->diffInMinutes($end);
-
-        $breakMinutes = $this->calculateBreakTime($attendance, true);
-        $totalMinutes = $workMinutes - $breakMinutes;
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
-    }
-
-    private function calculateBreakTime($attendance, $returnMinutes = false)
-    {
-        $totalMinutes = 0;
-
-        foreach ($attendance->breaks as $break) {
-            if ($break->start_time && $break->end_time) {
-                $start = Carbon::parse($break->start_time);
-                $end = Carbon::parse($break->end_time);
-                $totalMinutes += $start->diffInMinutes($end);
-            }
-        }
-
-        if ($returnMinutes) {
-            return $totalMinutes;
-        }
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
     }
 }

@@ -25,7 +25,7 @@
                         <a class="header-nav-link" href="{{ route('attendance') }}">勤怠</a>
                     </li>
                     <li class="header-nav-item">
-                        <a class="header-nav-link" href="{{ route('attendance.list') }}">勤怠一覧</a>
+                        <a class="header-nav-link" href="{{ route('user.attendance.list') }}">勤怠一覧</a>
                     </li>
                     <li class="header-nav-item">
                         <a class="header-nav-link" href="{{ route('correction.user.list') }}">申請</a>

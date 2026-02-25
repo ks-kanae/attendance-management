@@ -22,29 +22,10 @@ class AttendanceController extends Controller
             ->first();
 
         // 勤怠状態を判定
-        $status = $this->determineStatus($attendance);
+        $status = $attendance ? $attendance->status : 'not_working';
+
 
         return view('attendance', compact('attendance', 'status'));
-    }
-
-    private function determineStatus($attendance)
-    {
-        if (!$attendance) {
-            return 'not_working'; // 勤務外
-        }
-
-        if ($attendance->end_time) {
-            return 'finished'; // 退勤済
-        }
-
-        // 最後の休憩レコードを確認
-        $lastBreak = $attendance->breaks()->latest()->first();
-
-        if ($lastBreak && !$lastBreak->end_time) {
-            return 'on_break'; // 休憩中
-        }
-
-        return 'working'; // 出勤中
     }
 
     public function start(Request $request)
@@ -157,7 +138,8 @@ class AttendanceController extends Controller
         $targetDate = Carbon::create($year, $month, 1);
 
         // 指定月の勤怠データを取得
-        $attendances = Attendance::where('user_id', $user->id)
+        $attendances = Attendance::with('breaks')
+            ->where('user_id', $user->id)
             ->whereYear('date', $year)
             ->whereMonth('date', $month)
             ->orderBy('date')
@@ -176,8 +158,8 @@ class AttendanceController extends Controller
             $dates->push([
                 'date' => $date,
                 'attendance' => $attendance,
-                'total_work_time' => $attendance ? $this->calculateWorkTime($attendance) : null,
-                'total_break_time' => $attendance ? $this->calculateBreakTime($attendance) : null,
+                'total_work_time' => $attendance ? $attendance->work_time : null,
+                'total_break_time' => $attendance ? $attendance->break_time : null,
             ]);
         }
 
@@ -234,51 +216,4 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.detail', $id)->with('success', '修正申請を送信しました');
     }
 
-    /**
-     * 勤務時間を計算
-     */
-    private function calculateWorkTime($attendance)
-    {
-        if (!$attendance->start_time || !$attendance->end_time) {
-            return null;
-        }
-
-        $start = Carbon::parse($attendance->start_time);
-        $end = Carbon::parse($attendance->end_time);
-        $workMinutes = $start->diffInMinutes($end);
-
-        // 休憩時間を引く
-        $breakMinutes = $this->calculateBreakTime($attendance, true);
-        $totalMinutes = $workMinutes - $breakMinutes;
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
-    }
-
-    /**
-     * 休憩時間を計算
-     */
-    private function calculateBreakTime($attendance, $returnMinutes = false)
-    {
-        $totalMinutes = 0;
-
-        foreach ($attendance->breaks as $break) {
-            if ($break->start_time && $break->end_time) {
-                $start = Carbon::parse($break->start_time);
-                $end = Carbon::parse($break->end_time);
-                $totalMinutes += $start->diffInMinutes($end);
-            }
-        }
-
-        if ($returnMinutes) {
-            return $totalMinutes;
-        }
-
-        $hours = floor($totalMinutes / 60);
-        $minutes = $totalMinutes % 60;
-
-        return sprintf('%d:%02d', $hours, $minutes);
-    }
 }

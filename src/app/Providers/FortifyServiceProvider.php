@@ -30,21 +30,13 @@ class FortifyServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Fortify::loginView(function () {
-        return view('auth.login');
+            return view('auth.login');
         });
 
         Fortify::authenticateUsing(function (Request $request) {
-            if ($request->routeIs('admin.*')) {
-                if (Auth::guard('admin')->attempt($request->only('email','password'))) {
-                return Auth::guard('admin')->user();
-                }
-                return null;
-            }
-
-            if (Auth::guard('web')->attempt($request->only('email','password'))) {
+            if (Auth::guard('web')->attempt($request->only('email', 'password'))) {
                 return Auth::guard('web')->user();
             }
-
             return null;
         });
 
@@ -56,5 +48,11 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::registerView(function () {
             return view('auth.register');
         });
+
+        // ユーザー登録処理のバインド
+        $this->app->singleton(
+            \Laravel\Fortify\Contracts\CreatesNewUsers::class,
+            CreateNewUser::class
+        );
     }
 }
