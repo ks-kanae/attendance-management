@@ -5,7 +5,7 @@
 }
 
 .detail-content {
-    max-width: 800px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
@@ -30,7 +30,8 @@
 }
 
 .detail-card--readonly {
-    background: #fafafa;
+    background: #fff;
+    font-weight: bold;
 }
 
 .detail-row {
@@ -49,13 +50,12 @@
 }
 
 .detail-label {
-    width: 180px;
-    padding: 20px;
-    background: #f8f8f8;
+    width: 290px;
+    padding: 20px 0 20px 40px;
+    background: #fff;
     font-weight: 500;
     display: flex;
     align-items: center;
-    border-right: 1px solid #e0e0e0;
 }
 
 .detail-value {
@@ -63,6 +63,7 @@
     padding: 20px;
     display: flex;
     align-items: center;
+    font-weight: bold;
 }
 
 .detail-value-full {
@@ -84,7 +85,11 @@
     padding: 20px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 50px;
+}
+
+.time {
+    padding: 0 20px;
 }
 
 .time-input {
@@ -92,7 +97,19 @@
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.time-input::-moz-focus-inner {
+    display: none;
 }
 
 .time-input:focus {
@@ -116,7 +133,7 @@
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 15px;
     resize: vertical;
     font-family: inherit;
 }
@@ -132,7 +149,7 @@
 
 .error-message {
     color: #f44336;
-    font-size: 12px;
+    font-size: 14px;
     margin-top: 4px;
     text-align: left;
     display: block;

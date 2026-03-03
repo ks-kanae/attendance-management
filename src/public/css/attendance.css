@@ -23,16 +23,6 @@
     margin-bottom: 40px;
 }
 
-.status-badge--working {
-    background: #c8e6c9;
-    color: #2e7d32;
-}
-
-.status-badge--on_break {
-    background: #fff9c4;
-    color: #f57f17;
-}
-
 .status-badge--finished {
     background: #e0e0e0;
     color: #757575;
@@ -60,7 +50,7 @@
 .button-wrapper {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 40px;
 }
 
 .attendance-form {
@@ -91,26 +81,29 @@
 .attendance-button--break {
     background: #fff;
     color: #000;
-    border: 2px solid #000;
+    border: 1px solid #f1f1f1;
 }
 
 .attendance-button--break-end {
     background: #fff;
     color: #000;
-    border: 2px solid #000;
+    border: 1px solid #f1f1f1;
 }
 
 .attendance-button:hover {
+    color: #fff;
     background: #333;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .attendance-button--end:hover {
+    color: #fff;
     background: #333;
 }
 
 .attendance-button--break:hover {
+    color: #000;
     background: #f5f5f5;
 }
 
@@ -120,7 +113,8 @@
 
 .finish-message {
     font-size: 24px;
-    color: #666;
+    font-weight: 600;
+    color: #030303;
     margin: 0;
 }
 

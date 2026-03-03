@@ -52,8 +52,6 @@
                                         承認待ち
                                     @elseif($correction->status === 'approved')
                                         承認済み
-                                    @elseif($correction->status === 'rejected')
-                                        却下
                                     @endif
                                 </span>
                             </td>

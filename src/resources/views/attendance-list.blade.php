@@ -12,13 +12,13 @@
         {{-- 月選択 --}}
         <div class="month-selector">
             <a href="{{ route('user.attendance.list', ['year' => $targetDate->copy()->subMonth()->year, 'month' => $targetDate->copy()->subMonth()->month]) }}" class="month-nav-button">
-                ＜ 前月
+                ← 前月
             </a>
             <div class="current-month">
                 <span class="month-display">{{ $targetDate->format('Y/m') }}</span>
             </div>
             <a href="{{ route('user.attendance.list', ['year' => $targetDate->copy()->addMonth()->year, 'month' => $targetDate->copy()->addMonth()->month]) }}" class="month-nav-button">
-                翌月 ＞
+                翌月 →
             </a>
         </div>
 
@@ -42,8 +42,8 @@
                             {{ $dateData['date']->format('m/d') }}({{ ['日', '月', '火', '水', '木', '金', '土'][$dateData['date']->dayOfWeek] }})
                         </td>
                         @if($dateData['attendance'])
-                            <td>{{ $dateData['attendance']->start_time ? \Carbon\Carbon::parse($dateData['attendance']->start_time)->format('H:i') : '' }}</td>
-                            <td>{{ $dateData['attendance']->end_time ? \Carbon\Carbon::parse($dateData['attendance']->end_time)->format('H:i') : '' }}</td>
+                            <td>{{ $dateData['attendance']->formatted_start_time }}</td>
+                            <td>{{ $dateData['attendance']->formatted_end_time }}</td>
                             <td>{{ $dateData['total_break_time'] ?? '' }}</td>
                             <td>{{ $dateData['total_work_time'] ?? '' }}</td>
                             <td>

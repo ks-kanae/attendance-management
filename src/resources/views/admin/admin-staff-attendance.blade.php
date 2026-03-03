@@ -13,13 +13,13 @@
     {{-- 月選択 --}}
     <div class="month-selector">
         <a href="{{ route('admin.staff.attendance', ['id' => $staff->id, 'year' => $targetDate->copy()->subMonth()->year, 'month' => $targetDate->copy()->subMonth()->month]) }}" class="month-nav-button">
-            ＜ 前月
+            ← 前月
         </a>
         <div class="current-month">
             <span class="month-display">{{ $targetDate->format('Y/m') }}</span>
         </div>
         <a href="{{ route('admin.staff.attendance', ['id' => $staff->id, 'year' => $targetDate->copy()->addMonth()->year, 'month' => $targetDate->copy()->addMonth()->month]) }}" class="month-nav-button">
-            翌月 ＞
+            翌月 →
         </a>
     </div>
 

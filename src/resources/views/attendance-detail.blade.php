@@ -10,6 +10,9 @@
         <h1 class="page-title">勤怠詳細</h1>
 
         @if($hasPendingCorrection)
+            @php
+                $latest = optional($attendance->latestCorrection);
+            @endphp
             {{-- 承認待ち表示 --}}
             <div class="detail-card detail-card--readonly">
                 <div class="detail-row">
@@ -29,53 +32,38 @@
                     <div class="detail-label">出勤・退勤</div>
                     <div class="detail-value-group">
                         <span class="time-display">
-                            {{ $attendance->latestCorrection->corrected_start_time
-                                ? \Carbon\Carbon::parse($attendance->latestCorrection->corrected_start_time)->format('H:i')
-                                : \Carbon\Carbon::parse($attendance->start_time)->format('H:i') }}
+                            {{ $latest->corrected_start_time
+                            ? \Carbon\Carbon::parse($latest->corrected_start_time)->format('H:i')
+                            : optional($attendance->start_time)->format('H:i') }}
                         </span>
                         <span class="time-separator">〜</span>
                         <span class="time-display">
-                            {{ $attendance->latestCorrection->corrected_end_time
-                                ? \Carbon\Carbon::parse($attendance->latestCorrection->corrected_end_time)->format('H:i')
-                                : \Carbon\Carbon::parse($attendance->end_time)->format('H:i') }}
+                            {{ $latest->corrected_end_time
+                            ? \Carbon\Carbon::parse($latest->corrected_end_time)->format('H:i')
+                            : optional($attendance->end_time)->format('H:i') }}
                         </span>
                     </div>
                 </div>
 
-                @php
-                    $breaks = $attendance->breaks->values();
-                    $breakCorrections = $attendance->latestCorrection->breakCorrections->keyBy('break_number');
-
-                    $existingCount = max($breaks->count(), $breakCorrections->count());
-                @endphp
-
-                @for($i = 1; $i <= $existingCount; $i++)
-                    @php
-                        $break = $breaks->get($i - 1);
-                        $correction = $breakCorrections->get($i);
-
-                        $start = $correction->corrected_start_time ?? ($break->start_time ?? null);
-                        $end   = $correction->corrected_end_time   ?? ($break->end_time ?? null);
-                    @endphp
-
-                    <div class="detail-row">
-                        <div class="detail-label">休憩{{ $i > 1 ? $i : '' }}</div>
-                        <div class="detail-value-group">
-                            <span class="time-display">
-                                {{ $start ? \Carbon\Carbon::parse($start)->format('H:i') : '' }}
-                            </span>
-                            <span class="time-separator">〜</span>
-                            <span class="time-display">
-                                {{ $end ? \Carbon\Carbon::parse($end)->format('H:i') : '' }}
-                            </span>
-                        </div>
+                @foreach($attendance->display_breaks as $index => $break)
+                <div class="detail-row">
+                    <div class="detail-label">休憩{{ $index > 0 ? $index+1 : '' }}</div>
+                    <div class="detail-value-group">
+                        <span class="time-display">
+                            {{ $break['start_time'] ? \Carbon\Carbon::parse($break['start_time'])->format('H:i') : '' }}
+                        </span>
+                        <span class="time-separator">〜</span>
+                        <span class="time-display">
+                            {{ $break['end_time'] ? \Carbon\Carbon::parse($break['end_time'])->format('H:i') : '' }}
+                        </span>
                     </div>
-                @endfor
+                </div>
+                @endforeach
 
                 <div class="detail-row">
                     <div class="detail-label">備考</div>
                     <div class="detail-value">
-                        {{ $attendance->latestCorrection->reason }}
+                        {{ $latest->reason }}
                     </div>
                 </div>
             </div>
@@ -106,17 +94,17 @@
                     <div class="detail-row">
                         <div class="detail-label">出勤・退勤</div>
                         <div class="detail-value-group-wrapper">
-                            <div class="detail-value-group">
+                            <div class="detail-value-group time">
                                 <input type="time"
                                     name="corrected_start_time"
-                                    value="{{ $attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '' }}"
+                                    value="{{ old('corrected_start_time',$attendance->start_time ? \Carbon\Carbon::parse($attendance->start_time)->format('H:i') : '' )}}"
                                     class="time-input">
 
                                 <span class="time-separator">〜</span>
 
                                 <input type="time"
                                     name="corrected_end_time"
-                                    value="{{ $attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '' }}"
+                                    value="{{ old('corrected_end_time',$attendance->end_time ? \Carbon\Carbon::parse($attendance->end_time)->format('H:i') : '' )}}"
                                     class="time-input">
                             </div>
                             <div class="error-area">
@@ -136,18 +124,25 @@
                     @endphp
 
                     @for($i = 0; $i < $max; $i++)
+                        @php
+                            $breakItem = $breaks->get($i);
+                        @endphp
                         <div class="detail-row">
                             <div class="detail-label">休憩{{ $i > 0 ? $i+1 : '' }}</div>
                             <div class="detail-value-group-wrapper">
-                                <div class="detail-value-group">
+                                <div class="detail-value-group time">
                                     <input type="time"
                                         name="break_corrections[{{ $i }}][start_time]"
-                                        value="{{ optional($breaks->get($i))->start_time ? \Carbon\Carbon::parse($breaks->get($i)->start_time)->format('H:i') : '' }}"
+                                        value="{{ old("break_corrections.$i.start_time",$breakItem && $breakItem->start_time
+                                            ? \Carbon\Carbon::parse($breakItem->start_time)->format('H:i')
+                                            : '' )}}"
                                         class="time-input">
                                     <span class="time-separator">〜</span>
                                     <input type="time"
                                         name="break_corrections[{{ $i }}][end_time]"
-                                        value="{{ optional($breaks->get($i))->end_time ? \Carbon\Carbon::parse($breaks->get($i)->end_time)->format('H:i') : '' }}"
+                                        value="{{ old("break_corrections.$i.end_time",$breakItem && $breakItem->end_time
+                                        ? \Carbon\Carbon::parse($breakItem->end_time)->format('H:i')
+                                        : '' )}}"
                                         class="time-input">
                                 </div>
                                 <div class="error-area">
@@ -167,7 +162,7 @@
                         <div class="detail-value-full">
                             <textarea name="reason"
                                 class="remarks-textarea"
-                                placeholder="修正理由を入力してください">{{ old('reason') }}</textarea>
+                                placeholder="修正理由を入力してください">{{ old('reason', $attendance->display_reason) }}</textarea>
 
                             @error('reason')
                                 <div class="error-message">{{ $message }}</div>

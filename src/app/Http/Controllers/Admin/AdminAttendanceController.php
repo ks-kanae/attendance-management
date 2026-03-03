@@ -49,13 +49,20 @@ class AdminAttendanceController extends Controller
      */
     public function detail($id)
     {
-        $attendance = Attendance::with(['user', 'breaks'])
-            ->whereHas('user', function($query) {
-                $query->where('role', 'user');
-            })
-            ->findOrFail($id);
+        $attendance = Attendance::with(['user',
+        'breaks',
+        'latestCorrection.breakCorrections'])
+        ->whereHas('user', function($query) {
+            $query->where('role', 'user');
+        })
+        ->findOrFail($id);
 
-        return view('admin.admin-attendance-detail', compact('attendance'));
+        // 承認待ちがあるかチェック
+        $hasPendingCorrection = $attendance->corrections()
+            ->where('status', 'pending')
+            ->exists();
+
+        return view('admin.admin-attendance-detail', compact('attendance', 'hasPendingCorrection'));
     }
 
     /**
@@ -74,6 +81,10 @@ class AdminAttendanceController extends Controller
             'end_time' => $request->end_time,
             'reason'     => $request->reason,
         ]);
+
+        $attendance->corrections()
+        ->whereIn('status', ['pending', 'approved'])
+        ->delete();
 
         // ===== ここから休憩を「削除せず」更新 =====
         $existingBreaks = $attendance->breaks->values();

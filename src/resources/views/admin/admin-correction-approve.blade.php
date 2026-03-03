@@ -57,7 +57,7 @@
                 </div>
             @endforeach
 
-            {{-- ★追加用の空行（重要） --}}
+            {{-- ★追加用の空行 --}}
             @php
                 $emptyCount = max(0, 2 - $breaks->count());
             @endphp
@@ -88,4 +88,39 @@
     </form>
 </div>
 
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const button = document.getElementById('approvalButton');
+
+    button.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+        fetch("{{ route('admin.correction.approve', $correction->id) }}", {
+            method: 'POST',
+            headers: {
+                'X-CSRF-TOKEN': token,
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+
+                button.textContent = '承認済み';
+                button.classList.add('approval-button--approved');
+                button.disabled = true;
+
+            } else {
+                alert(data.message || '承認に失敗しました');
+            }
+        })
+        .catch(error => {
+            console.error(error);
+            alert('通信エラーが発生しました');
+        });
+    });
+});
+</script>
 @endsection

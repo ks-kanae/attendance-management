@@ -177,7 +177,9 @@ class AttendanceController extends Controller
             ->findOrFail($id);
 
         // 修正申請中かどうか
-        $hasPendingCorrection = $attendance->latestCorrection && $attendance->latestCorrection->isPending();
+        $hasPendingCorrection = $attendance->corrections()
+        ->where('status', 'pending')
+        ->exists();
 
         return view('attendance-detail', compact('attendance', 'hasPendingCorrection'));
     }

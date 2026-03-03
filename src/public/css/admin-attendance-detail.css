@@ -43,13 +43,12 @@
 }
 
 .detail-label {
-    width: 180px;
-    padding: 20px;
-    background: #f8f8f8;
+    width: 280px;
+    padding: 20px 0 20px 40px;
+    background: #fff;
     font-weight: 500;
     display: flex;
     align-items: center;
-    border-right: 1px solid #e0e0e0;
 }
 
 .detail-value {
@@ -57,6 +56,7 @@
     padding: 20px;
     display: flex;
     align-items: center;
+    font-weight: bold;
 }
 
 .detail-value-wrapper {
@@ -70,12 +70,13 @@
     padding: 20px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    font-weight: bold;
+    gap: 50px;
 }
 
 .detail-value-textarea {
     flex: 1;
-    padding: 20px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
 }
@@ -85,7 +86,19 @@
     padding: 8px 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
-    font-size: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
+.time-input::-moz-focus-inner {
+    display: none;
 }
 
 .time-input:focus {
@@ -98,16 +111,23 @@
 }
 
 .remarks-textarea {
-    width: 100%;
+    width: calc(100% - 24px);
     box-sizing: border-box;
     min-height: 100px;
     padding: 12px;
     border: 1px solid #ddd;
     border-radius: 4px;
     font-size: 14px;
+    font-weight: bold;
     resize: vertical;
     font-family: inherit;
     background: #fff;
+    margin: 12px 12px 12px 0;
+}
+
+.detail-value-group:has(.remarks-textarea) {
+    gap: 0;
+    padding: 12px 20px 4px 20px;
 }
 
 .remarks-textarea:focus {
@@ -116,13 +136,13 @@
 }
 
 .error-area {
-    padding: 0 20px 10px 20px;;
+    padding: 0 20px 8px 20px;;
 }
 
 .error-message, .form-error {
     color: #f44336;
     font-size: 12px;
-    margin-top: 4px;
+    margin-bottom: 8px;
     display: block;
 }
 
@@ -152,6 +172,13 @@
 
 .submit-button:active {
     transform: translateY(0);
+}
+
+.pending-message {
+    text-align: right;
+    color: #f44336;
+    font-size: 14px;
+    margin-top: 20px;
 }
 
 @media screen and (max-width: 768px) {

@@ -23,6 +23,7 @@
     display: flex;
     border-bottom: 1px solid #e0e0e0;
     min-height: 60px;
+    font-weight: bold;
 }
 
 .detail-row:last-child {
@@ -30,28 +31,27 @@
 }
 
 .detail-label {
-    width: 180px;
-    padding: 20px;
-    background: #f8f8f8;
+    width: 250px;
+    padding: 20px 0 20px 60px;
+    background: #fff;
     font-weight: 500;
     display: flex;
     align-items: center;
-    border-right: 1px solid #e0e0e0;
 }
 
 .detail-value {
     flex: 1;
-    padding: 20px;
+    padding: 20px 0 20px 100px;
     display: flex;
     align-items: center;
 }
 
 .detail-value-group {
     flex: 1;
-    padding: 20px;
+    padding: 20px 0 20px 100px;
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 50px;
 }
 
 .time-display {

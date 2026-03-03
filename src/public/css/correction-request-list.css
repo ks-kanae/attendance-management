@@ -75,7 +75,7 @@
     padding: 15px;
     text-align: center;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 16px;
     border-bottom: 2px solid #e0e0e0;
 }
 
@@ -83,7 +83,7 @@
     padding: 15px;
     text-align: center;
     border-bottom: 1px solid #f0f0f0;
-    font-size: 14px;
+    font-size: 16px;
 }
 
 .correction-table tbody tr:hover {
@@ -94,7 +94,7 @@
     display: inline-block;
     padding: 6px 16px;
     border-radius: 12px;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 500;
 }
 
@@ -108,11 +108,6 @@
     color: #2e7d32;
 }
 
-.status-badge--rejected {
-    background: #ffcdd2;
-    color: #c62828;
-}
-
 .reason-cell {
     max-width: 200px;
     overflow: hidden;
@@ -122,7 +117,8 @@
 
 .detail-link {
     color: #000;
-    text-decoration: underline;
+    text-decoration: none;
+    font-weight: bold;
     cursor: pointer;
     transition: opacity 0.3s;
 }

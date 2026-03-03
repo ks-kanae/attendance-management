@@ -32,7 +32,7 @@ class Attendance extends Model
 
     public function breaks()
     {
-        return $this->hasMany(WorkBreak::class);
+        return $this->hasMany(WorkBreak::class)->orderBy('id');
     }
 
     public function corrections()
@@ -107,5 +107,73 @@ class Attendance extends Model
         }
 
         return 'working';
+    }
+
+    public function getDisplayBreaksAttribute()
+    {
+        $breaks = $this->breaks->values();
+        $correction = $this->latestCorrection;
+
+        if (!$correction) {
+            return $breaks;
+        }
+
+        $breakCorrections = $correction->breakCorrections->keyBy('break_number');
+
+        $max = max($breaks->count(), $breakCorrections->count());
+
+        $results = collect();
+
+        for ($i = 1; $i <= $max; $i++) {
+            $break = $breaks->get($i - 1);
+            $correction = $breakCorrections->get($i);
+
+            $results->push([
+                'start_time' => $correction->corrected_start_time ?? $break->start_time ?? null,
+                'end_time'   => $correction->corrected_end_time ?? $break->end_time ?? null,
+            ]);
+        }
+
+        return $results;
+    }
+
+    public function getFormattedStartTimeAttribute()
+    {
+        return $this->start_time
+            ? $this->start_time->format('H:i')
+            : '';
+    }
+
+    public function getFormattedEndTimeAttribute()
+    {
+        return $this->end_time
+            ? $this->end_time->format('H:i')
+            : '';
+    }
+
+    public function getDisplayStartTimeAttribute()
+    {
+        return optional($this->approvedCorrection)->corrected_start_time
+        ?? $this->start_time;
+    }
+
+    public function getDisplayEndTimeAttribute()
+    {
+        return optional($this->approvedCorrection)->corrected_end_time
+        ?? $this->end_time;
+    }
+
+    public function getDisplayReasonAttribute()
+    {
+        return optional($this->approvedCorrection)->reason
+        ?? $this->reason;
+    }
+
+    public function getApprovedCorrectionAttribute()
+    {
+        return $this->corrections()
+        ->where('status', 'approved')
+        ->latest()
+        ->first();
     }
 }

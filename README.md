@@ -1,13 +1,15 @@
-# COACHTECHフリマアプリ
+# COACHTECH勤怠管理アプリ
 
-こちらのアプリは、アイテムの出品と購入を行うためのフリマアプリです。
+こちらのアプリは、勤怠の管理を行うアプリです。
 
 主な機能は以下の通りです。
-* ユーザー登録 / ログイン機能（Laravel Fortify）
+* 一般ユーザー登録 / ログイン機能（Laravel Fortify）
 * メール認証機能（MailHog）
-* 商品出品・購入機能
-* Stripe を利用したカード決済機能
-* コンビニ支払い
+* 出退勤、休憩、打刻機能
+* 勤怠確認・修正機能
+* 管理者ログイン機能
+* スタッフ情報確認機能
+* 修正申請認証機能
 
 環境構築の詳細を以下に記載しております。
 
@@ -26,7 +28,7 @@ git clone git@github.com:ks-kanae/attendance-management.git
 #### Dockerのビルド
 
 ```
-cd flea-market_app
+cd attendance-management
 
 docker-compose up -d --build
 
@@ -76,22 +78,11 @@ MAIL_ENCRYPTION=null
 + MAIL_FROM_ADDRESS=test@example.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
-```
-(テスト用のStripe API キーを追加)
-+ STRIPE_KEY=pk_test_XXXXXXXXXX
-+ STRIPE_SECRET=sk_test_XXXXXXXXXX
-```
+
 #### キー生成
 
 ```
 php artisan key:generate
-(PHPコンテナ上で実行)
-```
-
-#### ストレージリンクの作成
-
-```
-php artisan storage:link
 (PHPコンテナ上で実行)
 ```
 

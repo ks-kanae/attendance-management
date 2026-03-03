@@ -24,7 +24,7 @@ class AdminCorrectionController extends Controller
             $query->where('status', 'approved');
         }
 
-        $corrections = $query->orderBy('created_at', 'desc')->get();
+        $corrections = $query->orderBy('created_at', 'asc')->get();
 
         return view('admin.admin-correction-list', compact('corrections', 'tab'));
     }
@@ -47,41 +47,45 @@ class AdminCorrectionController extends Controller
      */
     public function approve(Request $request, $id)
     {
-        $correction = AttendanceCorrection::with(['attendance', 'breakCorrections'])->findOrFail($id);
+        $correction = AttendanceCorrection::with('breakCorrections', 'attendance.breaks')
+        ->findOrFail($id);
+
+    if ($correction->status === 'approved') {
+        return response()->json(['status' => 'error', 'message' => '既に承認済みです']);
+    }
+
+    DB::transaction(function () use ($correction) {
+
+        $correction->update([
+            'status' => 'approved',
+            'approved_by' => auth('admin')->id(),
+            'approved_at' => now(),
+        ]);
+
         $attendance = $correction->attendance;
 
-        DB::transaction(function () use ($correction, $attendance) {
+        // ===== 勤怠時間更新 =====
+        $attendance->update([
+            'start_time' => $correction->corrected_start_time,
+            'end_time'   => $correction->corrected_end_time,
+            'reason'     => $correction->reason,
+        ]);
 
-            // 出退勤反映
-            $attendance->update([
-                'start_time' => $correction->corrected_start_time,
-                'end_time'   => $correction->corrected_end_time,
-            ]);
+        // ===== ここが重要 =====
+        // 既存の休憩を全削除
+        $attendance->breaks()->delete();
 
-            // 既存休憩を削除
-            $attendance->breaks()->delete();
-
-            // 申請された休憩を登録
-            foreach ($correction->breakCorrections as $break) {
-
-                if (empty($break->corrected_start_time) && empty($break->corrected_end_time)) {
-                    continue;
-                }
-
+        // 修正休憩を再作成
+        foreach ($correction->breakCorrections as $break) {
+            if ($break->corrected_start_time && $break->corrected_end_time) {
                 $attendance->breaks()->create([
                     'start_time' => $break->corrected_start_time,
                     'end_time'   => $break->corrected_end_time,
                 ]);
             }
+        }
+    });
 
-            // 承認
-            $correction->update([
-                'status' => 'approved',
-                'approved_by' => auth('admin')->id(),
-                'approved_at' => now(),
-            ]);
-        });
-
-        return redirect()->route('admin.correction.list')->with('success', '承認しました');
+    return response()->json(['status' => 'success']);
     }
 }

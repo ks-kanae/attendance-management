@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 use App\Models\Admin;
 use App\Models\User;
@@ -127,7 +128,10 @@ class CorrectionTest extends TestCase
         $response = $this->actingAs($admin, 'admin')
             ->post(route('admin.correction.approve', $correction->id));
 
-        $response->assertRedirect(route('admin.correction.list'));
+        $response->assertStatus(200);
+        $response->assertJson([
+            'status' => 'success'
+        ]);
 
         $this->assertDatabaseHas('attendance_corrections', [
             'id' => $correction->id,
