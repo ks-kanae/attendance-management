@@ -120,9 +120,9 @@ Webサーバー：Nginx 1.21.1
 
 ## URL
 
-アプリケーション：http://localhost/
+一般ユーザーログイン：http://localhost/login
 
-ユーザー登録：http://localhost/register
+一般ユーザー登録：http://localhost/register
 
 phpMyAdmin：http://localhost:8080/
 
@@ -147,4 +147,4 @@ MailHog管理画面 : http://localhost:8025/
 
 パスワード: password
 
-ログインURL: http://localhost/admin/login
+管理者ログイン: http://localhost/admin/login
