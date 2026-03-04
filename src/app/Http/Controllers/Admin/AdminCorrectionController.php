@@ -12,7 +12,7 @@ class AdminCorrectionController extends Controller
 {
     public function list(Request $request)
     {
-        // タブ取得（URL ?tab=pending とか）
+        // タブ取得
         $tab = $request->query('tab', 'pending');
 
         // ステータスで絞り込み
@@ -71,7 +71,6 @@ class AdminCorrectionController extends Controller
             'reason'     => $correction->reason,
         ]);
 
-        // ===== ここが重要 =====
         // 既存の休憩を全削除
         $attendance->breaks()->delete();
 

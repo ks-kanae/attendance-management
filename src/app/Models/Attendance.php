@@ -147,8 +147,8 @@ class Attendance extends Model
     public function getFormattedEndTimeAttribute()
     {
         return $this->end_time
-            ? $this->end_time->format('H:i')
-            : '';
+        ? $this->end_time->format('H:i')
+        : '';
     }
 
     public function getDisplayStartTimeAttribute()

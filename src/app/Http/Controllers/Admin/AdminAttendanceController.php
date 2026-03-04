@@ -86,7 +86,7 @@ class AdminAttendanceController extends Controller
         ->whereIn('status', ['pending', 'approved'])
         ->delete();
 
-        // ===== ここから休憩を「削除せず」更新 =====
+        // 休憩を削除せず更新
         $existingBreaks = $attendance->breaks->values();
 
         if ($request->has('breaks')) {
@@ -124,7 +124,6 @@ class AdminAttendanceController extends Controller
                 }
             }
         }
-        // ===== ここまで =====
 
         return redirect()->route('admin.attendance.detail', $id)->with('success', '勤怠情報を更新しました');
     }

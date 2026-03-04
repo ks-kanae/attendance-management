@@ -18,7 +18,6 @@
                 <a href="{{ route('attendance') }}">
                     <img class="header-logo" src="{{ asset('img/COACHTECHヘッダーロゴ.png') }}">
                 </a>
-
                 <ul class="header-nav">
                     @if (Auth::check())
                     <li class="header-nav-item">

@@ -24,12 +24,16 @@ class RedirectIfAuthenticated
     foreach ($guards as $guard) {
 
         if ($guard === 'admin' && Auth::guard('admin')->check()) {
-            return redirect()->route('admin.attendance.list');
-        }
+        return redirect()->route('admin.attendance.list');
+    }
 
-        if ($guard === null && Auth::guard('web')->check()) {
-            return redirect('/attendance');
-        }
+    if ($guard === 'web' && Auth::guard('web')->check()) {
+        return redirect('/attendance');
+    }
+
+    if ($guard === null && Auth::guard('web')->check()) {
+        return redirect('/attendance');
+    }
     }
 
     return $next($request);

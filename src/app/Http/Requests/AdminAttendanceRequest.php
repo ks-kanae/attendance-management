@@ -59,7 +59,7 @@ class AdminAttendanceRequest extends FormRequest
                 $bStart = $break['start_time'] ?? null;
                 $bEnd   = $break['end_time'] ?? null;
 
-                // **既存データがある場合 or どちらか入力されている場合のみチェック**
+                // 既存データがある場合 or どちらか入力されている場合のみチェック
                 $hasExisting = isset($this->attendance) && $this->attendance->breaks->get($index);
                 if (!$hasExisting && !$bStart && !$bEnd) {
                 continue; // 空白で新規ならスキップ

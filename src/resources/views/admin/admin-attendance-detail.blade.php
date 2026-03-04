@@ -10,7 +10,7 @@
 <div class="admin-container">
     <h1 class="page-title">勤怠詳細</h1>
 
-    {{-- ★ 承認待ちの場合はフォームを出さない --}}
+    {{-- 承認待ちの場合はフォームを出さない --}}
     @if($hasPendingCorrection)
         <div class="detail-card">
             <div class="detail-row">
@@ -64,13 +64,13 @@
             </div>
         </div>
 
-        {{-- ★ メッセージ表示 --}}
+        {{-- メッセージ表示 --}}
         <div class="pending-message">
             ＊承認待ちのため修正はできません。
         </div>
 
     @else
-        {{-- ★ 承認待ちでない場合はフォーム表示 --}}
+        {{-- 承認待ちでない場合はフォーム表示 --}}
         <form action="{{ route('admin.attendance.update', $attendance->id) }}" method="POST" class="detail-form">
             @csrf
 
